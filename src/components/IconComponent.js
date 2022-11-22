@@ -5,7 +5,7 @@ import { saveAs } from 'file-saver';
 
 const IconComponent = ({ name, category, url }) => {
   const downloadImage = () => {
-    saveAs(url); // Put your image url here.
+    saveAs(url, name); // Put your image url here.
   };
   return (
     <Box boxSize="200" position="relative">
