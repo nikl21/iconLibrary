@@ -6,7 +6,9 @@ const IconGrid = ({ data }) => {
   console.log(data);
   const icons =
     data &&
-    data.map(icon => <IconComponent name={icon.name} url={icon.image} />);
+    data.map(icon => (
+      <IconComponent key={icon.name} name={icon.name} url={icon.image} />
+    ));
   const skeleton = [1, 1, 1, 1, 1, 1, 1, , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map(
     i => <Skeleton height="150" width="150" m={4} />
   );

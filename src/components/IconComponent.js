@@ -7,27 +7,24 @@ const IconComponent = ({ name, category, url }) => {
   const downloadImage = () => {
     saveAs(url, name); // Put your image url here.
   };
-  const download = e => {
-    e.preventDefault();
-    console.log(e.target.href);
-    fetch(e.target.href, {
-      method: 'GET',
-      headers: {},
-    })
+  async function download(url) {
+    const a = document.createElement('a');
+    a.href = await toDataURL(url);
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  function toDataURL(url) {
+    return fetch(url)
       .then(response => {
-        response.arrayBuffer().then(function (buffer) {
-          const url = window.URL.createObjectURL(new Blob([buffer]));
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', name); //or any other extension
-          document.body.appendChild(link);
-          link.click();
-        });
+        return response.blob();
       })
-      .catch(err => {
-        console.log(err);
+      .then(blob => {
+        return URL.createObjectURL(blob);
       });
-  };
+  }
   return (
     <Box boxSize="200" position="relative">
       <Image src={url} alt="name" />
@@ -42,10 +39,9 @@ const IconComponent = ({ name, category, url }) => {
           m={2}
           bg="black"
           _hover={{ backgroundColor: 'gray' }}
+          onClick={() => download(url)}
         >
-          <a href={url} download onClick={e => download(e)}>
-            <DownloadIcon color="white" boxSize={4} />
-          </a>
+          <DownloadIcon color="white" boxSize={4} />
         </Square>
       </Flex>
     </Box>
