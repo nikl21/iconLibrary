@@ -17,7 +17,7 @@ const IconComponent = ({ name, category, url }) => {
   }
 
   function toDataURL(url) {
-    return fetch(url)
+    return fetch(url, { mode: 'no-cors' })
       .then(response => {
         return response.blob();
       })

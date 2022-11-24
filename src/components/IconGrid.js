@@ -3,7 +3,6 @@ import React from 'react';
 import IconComponent from './IconComponent';
 
 const IconGrid = ({ data }) => {
-  console.log(data);
   const icons =
     data &&
     data.map(icon => (
