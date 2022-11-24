@@ -14,7 +14,6 @@ const IconComponent = ({ name, category, url }) => {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    downloadImage();
   }
 
   function toDataURL(url) {
