@@ -69,17 +69,17 @@ function HomePage() {
     filter();
   }, [color, data, category, searchData]);
   return (
-    <Box textAlign="center" fontSize="xl" px={16}>
+    <Box textAlign="center" fontSize="xl" px={[6, 10, 16]}>
       <NavBar />
       <Flex>
-        <Box flex="1" py={4} ml={8}>
+        <Box flex="1" py={4} ml={0}>
           <CategoryList
             category={category}
             setCategory={setCategory}
             setSearchData={setSearchData}
           />
         </Box>
-        <Center>
+        {/* <Center>
           <Divider
             orientation="vertical"
             color="black"
@@ -87,9 +87,12 @@ function HomePage() {
             borderColor="black"
             h="full"
           />
-        </Center>
-        <Box flex="5" bg="" mx={16}>
-          <Flex align="center">
+        </Center> */}
+        <Box flex="5" bg="" mx={4}>
+          <Flex
+            align="center"
+            flexDirection={['column', 'column', 'column', 'row']}
+          >
             <SearchBar
               query={query}
               setQuery={setQuery}

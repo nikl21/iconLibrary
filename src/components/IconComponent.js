@@ -9,8 +9,15 @@ const IconComponent = ({ name, category, url }) => {
   };
 
   return (
-    <Box boxSize="200" position="relative">
-      <Image src={url} alt="name" />
+    <Box
+      boxSize="200"
+      position="relative"
+      bg={'#FDFAF7'}
+      my={4}
+      rounded={20}
+      shadow={2}
+    >
+      <Image src={url} alt="name" fit={'cover'} />
       <Flex px={20} justify="center" align="center">
         <Spacer />
         <Square
