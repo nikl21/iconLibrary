@@ -1,4 +1,12 @@
-import { Box, Center, Divider, Flex, Spacer, Spinner } from '@chakra-ui/react';
+import {
+  Box,
+  Center,
+  Divider,
+  Flex,
+  Spacer,
+  Spinner,
+  Text,
+} from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import NavBar from '../components/NavBar';
 import IconGrid from '../components/IconGrid';
@@ -12,16 +20,35 @@ import { fetchIcons } from '../App';
 function HomePage() {
   const [category, setCategory] = useState('all');
   const [color, setColor] = useState('#383838');
+  const [query, setQuery] = useState('');
   // const [datas, setData] = useState(null);
   const [filteredData, setFilteredData] = useState(null);
+  const [searchData, setSearchData] = useState(null);
+  const [isSearching, setSearching] = useState(false);
 
   const { status, data, error } = useQuery(['data'], fetchIcons);
-
   useEffect(() => {
     function filter() {
       const filterColor = [];
-      data &&
-        data.forEach(icon => {
+      if (!searchData) {
+        data &&
+          data?.results.forEach(icon => {
+            const iconObj = {};
+            iconObj.category = icon.category.slug;
+            icon.variants.forEach(variant => {
+              if (variant.color === color) {
+                iconObj.image = variant.image;
+                iconObj.name = variant.filename;
+                if (category === 'all') {
+                  filterColor.push(iconObj);
+                } else if (category === icon.category.slug) {
+                  filterColor.push(iconObj);
+                }
+              }
+            });
+          });
+      } else {
+        searchData?.forEach(icon => {
           const iconObj = {};
           iconObj.category = icon.category.slug;
           icon.variants.forEach(variant => {
@@ -36,16 +63,21 @@ function HomePage() {
             }
           });
         });
+      }
       setFilteredData(filterColor);
     }
     filter();
-  }, [color, data, category]);
+  }, [color, data, category, searchData]);
   return (
     <Box textAlign="center" fontSize="xl" px={16}>
       <NavBar />
       <Flex>
-        <Box flex="1" py={4}>
-          <CategoryList category={category} setCategory={setCategory} />
+        <Box flex="1" py={4} ml={8}>
+          <CategoryList
+            category={category}
+            setCategory={setCategory}
+            setSearchData={setSearchData}
+          />
         </Box>
         <Center>
           <Divider
@@ -56,14 +88,30 @@ function HomePage() {
             h="full"
           />
         </Center>
-        <Box flex="4" bg="" mx={16}>
+        <Box flex="5" bg="" mx={16}>
           <Flex align="center">
-            <SearchBar />
+            <SearchBar
+              query={query}
+              setQuery={setQuery}
+              setData={setSearchData}
+              setSearching={setSearching}
+            />
             <Spacer />
             <ColorSwitcher color={color} setColor={setColor} />
           </Flex>
           <Box style={{ overflowY: 'scroll' }} h={'80vh'}>
-            <IconGrid data={filteredData} />
+            <IconGrid data={filteredData} isSearching={isSearching} />
+          </Box>
+          <Box p={10}>
+            <Text as="b" color="black">
+              Don't see What you are looking for ?
+            </Text>
+            <Text color="black">
+              Please share your suggestions on Slack:
+              <Text as="b" color={'#00956E'}>
+                {` #noora-health-the-brand`}
+              </Text>
+            </Text>
           </Box>
         </Box>
       </Flex>

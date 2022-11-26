@@ -1,10 +1,19 @@
 import { Search2Icon } from '@chakra-ui/icons';
-import { Input, InputGroup, InputRightElement, Stack } from '@chakra-ui/react';
+import {
+  Button,
+  Center,
+  HStack,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Stack,
+} from '@chakra-ui/react';
+import axios from 'axios';
 import React from 'react';
 
-function SearchBar() {
+function SearchBar({ query, setQuery, setData, setSearching }) {
   return (
-    <Stack>
+    <HStack>
       <InputGroup>
         <Input
           placeholder="search"
@@ -13,11 +22,32 @@ function SearchBar() {
           rounded={20}
           bg={'#f5f5f5'}
           border={0}
+          value={query}
+          onChange={e => {
+            setQuery(e.target.value);
+          }}
           boxShadow={'xs'}
         />
-        <InputRightElement children={<Search2Icon />} mx={4} />
       </InputGroup>
-    </Stack>
+      <Button
+        onClick={() => {
+          setSearching(true);
+          axios
+            .get(
+              `https://staging.noorahealth.org/icons/api/v1/search/?q=${query}`
+            )
+            .then(result => {
+              console.log(result.data);
+              setData(result.data);
+              setSearching(false);
+            });
+        }}
+        p={6}
+        bg={'none'}
+      >
+        <Search2Icon />
+      </Button>
+    </HStack>
   );
 }
 

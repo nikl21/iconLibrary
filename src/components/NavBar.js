@@ -12,6 +12,8 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import logo from '../assets/logo.png';
+import { saveAs } from 'file-saver';
+import icons from '../assets/icon_library.zip';
 function NavBar() {
   return (
     <Flex minWidth="max-content" alignItems="center" gap="10" p={10}>
@@ -22,11 +24,15 @@ function NavBar() {
         Icon Library
       </Text>
       <Spacer />
-      <Box bg="black" _hover={{ bg: 'gray' }} rounded={20}>
+      <Box rounded={20}>
         <Button
           rightIcon={<DownloadIcon />}
-          colorScheme={'blackAlpha'}
+          variant="outline"
+          colorScheme="black"
           rounded={20}
+          onClick={() => {
+            saveAs(icons, 'all_Icons.zip');
+          }}
         >
           Download all
         </Button>

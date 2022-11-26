@@ -13,6 +13,7 @@ function CategoryButton({ isSelected, title, onClick }) {
       borderColor="black"
       onClick={onClick}
       colorScheme="blackAlpha"
+      justifyContent="flex-start"
     >
       {title}
     </Button>

@@ -11,7 +11,7 @@ const persister = createSyncStoragePersister({
 });
 export const fetchIcons = async () => {
   const res = await await axios.get(
-    'https://staging.noorahealth.org/icons/api/v1/icons/'
+    'https://staging.noorahealth.org/icons/api/v1/icons/?limit=40'
   );
   return res.data;
 };
