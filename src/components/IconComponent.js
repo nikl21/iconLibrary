@@ -7,24 +7,7 @@ const IconComponent = ({ name, category, url }) => {
   const downloadImage = () => {
     saveAs(url, name); // Put your image url here.
   };
-  async function download(url) {
-    const a = document.createElement('a');
-    a.href = await toDataURL(url);
-    a.download = name;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  }
 
-  function toDataURL(url) {
-    return fetch(url)
-      .then(response => {
-        return response.blob();
-      })
-      .then(blob => {
-        return URL.createObjectURL(blob);
-      });
-  }
   return (
     <Box boxSize="200" position="relative">
       <Image src={url} alt="name" />
@@ -39,7 +22,7 @@ const IconComponent = ({ name, category, url }) => {
           m={2}
           bg="black"
           _hover={{ backgroundColor: 'gray' }}
-          onClick={() => download(url)}
+          onClick={() => downloadImage(url)}
         >
           <DownloadIcon color="white" boxSize={4} />
         </Square>
