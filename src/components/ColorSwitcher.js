@@ -5,7 +5,7 @@ import ColorButton from './ColorButton';
 function ColorSwitcher({ color, setColor }) {
   return (
     <Flex align="center" justify="center" gap={4} pt={[10, 10, 10, 0]}>
-      <Text as="b" fontSize="lg">
+      <Text fontWeight={600} fontSize="lg">
         Choose Colour:
       </Text>
       <ColorButton

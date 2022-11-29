@@ -16,7 +16,7 @@ function CategoryList({ category, setCategory, setSearchData, setQuery }) {
       justify="flex-start"
       align="left"
     >
-      <Text as="b" color="black" align="left">
+      <Text fontWeight={600} color="black" align="left">
         Categories:
       </Text>
 

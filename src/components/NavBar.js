@@ -20,7 +20,7 @@ function NavBar() {
       <Box>
         <Image boxSize="50px" src={logo} alt="noora_logo" />
       </Box>
-      <Text as="b" fontSize="5xl">
+      <Text fontWeight={600} fontSize="5xl">
         Icon Library
       </Text>
       <Spacer />

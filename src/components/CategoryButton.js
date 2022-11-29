@@ -1,4 +1,4 @@
-import { Button } from '@chakra-ui/react';
+import { Button, Text } from '@chakra-ui/react';
 import React from 'react';
 
 function CategoryButton({ isSelected, title, onClick }) {
@@ -15,7 +15,7 @@ function CategoryButton({ isSelected, title, onClick }) {
       colorScheme="blackAlpha"
       justifyContent="flex-start"
     >
-      {title}
+      <Text fontWeight={400}>{title}</Text>
     </Button>
   );
 }
