@@ -23,7 +23,7 @@ const IconGrid = ({ data, isSearching }) => {
   );
   return (
     <>
-      {data === 'none' ? (
+      {data === 'none' && !isSearching ? (
         <Box h="full" pt="40">
           <Text>Sorry We didn't find anything!</Text>
         </Box>
