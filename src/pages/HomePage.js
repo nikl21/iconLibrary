@@ -13,7 +13,6 @@ import IconGrid from '../components/IconGrid';
 import SearchBar from '../components/SearchBar';
 import ColorSwitcher from '../components/ColorSwitcher';
 import CategoryList from '../components/CategoryList';
-import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import { fetchIcons } from '../App';
 
@@ -47,8 +46,9 @@ function HomePage() {
               }
             });
           });
-      } else {
-        searchData?.forEach(icon => {
+        setFilteredData(filterColor);
+      } else if (searchData !== 'none') {
+        searchData.forEach(icon => {
           const iconObj = {};
           iconObj.category = icon.category.slug;
           icon.variants.forEach(variant => {
@@ -63,8 +63,10 @@ function HomePage() {
             }
           });
         });
+        setFilteredData(filterColor);
+      } else {
+        setFilteredData('none');
       }
-      setFilteredData(filterColor);
     }
     filter();
   }, [color, data, category, searchData]);
@@ -77,17 +79,9 @@ function HomePage() {
             category={category}
             setCategory={setCategory}
             setSearchData={setSearchData}
+            setQuery={setQuery}
           />
         </Box>
-        {/* <Center>
-          <Divider
-            orientation="vertical"
-            color="black"
-            borderWidth="1px"
-            borderColor="black"
-            h="full"
-          />
-        </Center> */}
         <Box flex="5" bg="" mx={4}>
           <Flex
             align="center"
@@ -98,6 +92,7 @@ function HomePage() {
               setQuery={setQuery}
               setData={setSearchData}
               setSearching={setSearching}
+              setCategory={setCategory}
             />
             <Spacer />
             <ColorSwitcher color={color} setColor={setColor} />

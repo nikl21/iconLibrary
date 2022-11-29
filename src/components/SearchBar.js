@@ -1,17 +1,29 @@
 import { Search2Icon } from '@chakra-ui/icons';
-import {
-  Button,
-  Center,
-  HStack,
-  Input,
-  InputGroup,
-  InputRightElement,
-  Stack,
-} from '@chakra-ui/react';
+import { Button, HStack, Input, InputGroup } from '@chakra-ui/react';
 import axios from 'axios';
 import React from 'react';
 
-function SearchBar({ query, setQuery, setData, setSearching }) {
+function SearchBar({ query, setQuery, setData, setSearching, setCategory }) {
+  function search() {
+    setSearching(true);
+    axios
+      .get(`https://staging.noorahealth.org/icons/api/v1/search/?q=${query}`)
+      .then(result => {
+        setCategory('all');
+        console.log(result.data);
+        if (result.data.length > 0) {
+          setData(result.data);
+        } else {
+          setData('none');
+        }
+        setSearching(false);
+      });
+  }
+  function onKeyDown(e) {
+    if (e.key === 'Enter') {
+      search();
+    }
+  }
   return (
     <HStack>
       <InputGroup>
@@ -26,25 +38,11 @@ function SearchBar({ query, setQuery, setData, setSearching }) {
           onChange={e => {
             setQuery(e.target.value);
           }}
+          onKeyDown={onKeyDown}
           boxShadow={'xs'}
         />
       </InputGroup>
-      <Button
-        onClick={() => {
-          setSearching(true);
-          axios
-            .get(
-              `https://staging.noorahealth.org/icons/api/v1/search/?q=${query}`
-            )
-            .then(result => {
-              console.log(result.data);
-              setData(result.data);
-              setSearching(false);
-            });
-        }}
-        p={6}
-        bg={'none'}
-      >
+      <Button onClick={search} p={6} bg={'none'}>
         <Search2Icon />
       </Button>
     </HStack>

@@ -1,10 +1,11 @@
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ChakraProvider, theme } from '@chakra-ui/react';
+import { ChakraProvider } from '@chakra-ui/react';
 import HomePage from './pages/HomePage';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
 import axios from 'axios';
+import { extendTheme } from '@chakra-ui/react';
 
 const persister = createSyncStoragePersister({
   storage: window.localStorage,
@@ -24,10 +25,17 @@ function App() {
     },
   });
   queryClient.setMutationDefaults(['data'], {
-    mutationFn: async ({ id, comment }) => {
+    mutationFn: async () => {
       // to avoid clashes with our optimistic update when an offline mutation continues
       await queryClient.cancelQueries('data');
       return fetchIcons();
+    },
+  });
+
+  const theme = extendTheme({
+    fonts: {
+      heading: `'Poppins', sans-serif`,
+      body: `'Poppins', sans-serif`,
     },
   });
 

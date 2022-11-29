@@ -2,10 +2,11 @@ import { Text, VStack } from '@chakra-ui/react';
 import React from 'react';
 import CategoryButton from './CategoryButton';
 
-function CategoryList({ category, setCategory, setSearchData }) {
+function CategoryList({ category, setCategory, setSearchData, setQuery }) {
   function onClick(category) {
     setCategory(category);
     setSearchData(null);
+    setQuery('');
   }
   return (
     <VStack
