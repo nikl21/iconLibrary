@@ -10,9 +10,9 @@ import { extendTheme } from '@chakra-ui/react';
 const persister = createSyncStoragePersister({
   storage: window.localStorage,
 });
-export const fetchIcons = async () => {
+export const fetchIcons = async category => {
   const res = await await axios.get(
-    'https://staging.noorahealth.org/icons/api/v1/icons/?limit=40'
+    `https://staging.noorahealth.org/icons/api/v1/icons/?limit=16&category=${category}`
   );
   return res.data;
 };
@@ -24,10 +24,10 @@ function App() {
       },
     },
   });
-  queryClient.setMutationDefaults(['data'], {
+  queryClient.setMutationDefaults(['all'], {
     mutationFn: async () => {
       // to avoid clashes with our optimistic update when an offline mutation continues
-      await queryClient.cancelQueries('data');
+      await queryClient.cancelQueries('all');
       return fetchIcons();
     },
   });
