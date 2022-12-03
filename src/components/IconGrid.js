@@ -1,79 +1,78 @@
 import { Box, SimpleGrid, Skeleton, Text } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import IconComponent from './IconComponent';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import axios from 'axios';
+import FilterColor from '../utils/FilterColor';
+import { queryClient } from '../utils/queryApi';
 
 const IconGrid = ({ data, isSearching, color, category }) => {
   const [nextData, setNextData] = useState(data.next);
-  const [iconData, setData] = useState(data);
+  const [iconData, setData] = useState(data.results);
   const [filteredData, setFilteredData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  console.log(filteredData.length);
-  console.log(nextData, data);
-
-  console.log(isLoading);
+  // console.log(filteredData.length,nextData);
+  // useEffect(() => {
+  //   if (!isLoading) {
+  //     console.log('done');
+  //     const prevData = queryClient.getQueryData([category]);
+  //     console.log(prevData, iconData);
+  //     if (prevData.results.length !== iconData.length) {
+  //       prevData.next = null;
+  //       prevData.results = iconData;
+  //       queryClient.setQueryData([category], prevData);
+  //     }
+  //   }
+  // }, [isLoading, category, iconData]);
   useEffect(() => {
-    setNextData(data.next);
-  }, [category, data.next]);
-  useEffect(() => {
-    if (data.next === null) {
+    setData(data.results);
+    if (data.next) {
+      setNextData(data.next);
+      setIsLoading(true);
+    } else {
       setIsLoading(false);
     }
+
+    return;
+  }, [category, data]);
+  useEffect(() => {
+    setFilteredData([]);
+  }, [category]);
+
+  useEffect(() => {
     function filter() {
-      const filterColor = [];
-      data.results &&
-        data.results.forEach(icon => {
-          const iconObj = {};
-          icon.variants.forEach(variant => {
-            if (variant.color === color) {
-              iconObj.image = variant.image;
-              iconObj.name = variant.filename;
-              filterColor.push(iconObj);
-            }
-          });
-        });
+      const filterColor = FilterColor(iconData, color);
       setFilteredData(filterColor);
     }
-    filter();
-  }, [color, data, category]);
+    iconData && filter();
+  }, [color, iconData, data]);
+
   async function fetchData() {
+    console.log('fetching');
     if (nextData === null) {
       setIsLoading(false);
     } else {
-      axios
+      const result = await axios
         .get(nextData)
         .then(dat => {
-          console.log('next', dat.data);
-          const filterColor = [];
-          dat.data.results &&
-            dat.data.results.forEach(icon => {
-              const iconObj = {};
-              icon.variants.forEach(variant => {
-                if (variant.color === color) {
-                  iconObj.image = variant.image;
-                  iconObj.name = variant.filename;
-                  filterColor.push(iconObj);
-                }
-              });
-            });
-          console.log('received next', dat.data.next);
-          setFilteredData(filteredData.concat(filterColor));
           setNextData(dat.data.next);
+          return dat.data;
         })
         .catch(error => console.log(error));
+      setData(data => data.concat(result.results));
+
+      if (!result.next) {
+        setIsLoading(false);
+      } else {
+        setNextData(result.next);
+      }
     }
-    console.log(isLoading);
   }
-  const icons =
-    filteredData &&
-    filteredData !== 'none' &&
-    filteredData.map(icon => (
-      <IconComponent key={icon.name} name={icon.name} url={icon.image} />
-    ));
-  const skeleton = [1, 1, 1, 1, 1, 1, 1, , 1, 1, 1, 1, 1, 1, 1, 1, 1].map(
-    (i, index) => <Skeleton height="200px" key={index} width="200px" m={4} />
-  );
+
+  const icons = filteredData.map(icon => (
+    <IconComponent key={icon.name} name={icon.name} url={icon.image} />
+  ));
+
   return (
     <>
       {data === 'none' && !isSearching ? (
@@ -82,7 +81,7 @@ const IconGrid = ({ data, isSearching, color, category }) => {
         </Box>
       ) : (
         <InfiniteScroll
-          dataLength={filteredData.length} //This is important field to render the next data
+          dataLength={18} //This is important field to render the next data
           next={fetchData}
           hasMore={isLoading}
           loader={<h4>Loading...</h4>}
@@ -93,13 +92,7 @@ const IconGrid = ({ data, isSearching, color, category }) => {
           }
         >
           <SimpleGrid pb={40} columns={[1, 1, 2, 4]} py={4}>
-            {isSearching
-              ? skeleton
-              : filteredData &&
-                filteredData !== 'none' &&
-                filteredData.length > 0
-              ? icons
-              : skeleton}
+            {filteredData && filteredData !== 'none' && icons}
           </SimpleGrid>
         </InfiniteScroll>
       )}

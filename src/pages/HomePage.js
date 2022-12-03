@@ -1,10 +1,10 @@
 import {
   Box,
   Center,
-  Divider,
   Flex,
+  SimpleGrid,
+  Skeleton,
   Spacer,
-  Spinner,
   Text,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
@@ -14,8 +14,20 @@ import SearchBar from '../components/SearchBar';
 import ColorSwitcher from '../components/ColorSwitcher';
 import CategoryList from '../components/CategoryList';
 import { useQuery } from '@tanstack/react-query';
-import { fetchIcons } from '../App';
+import { fetchIcons } from '../utils/queryApi';
+import Lottie from 'react-lottie';
+import * as animationData from '../assets/loader.lottie';
 
+const skeleton = (
+  <Center>
+    <Text>Loading</Text>
+  </Center>
+  // <SimpleGrid pb={40} columns={[1, 1, 2, 4]} py={4}>
+  //   {[1, 1, 1, 1, 1, 1, 1, , 1, 1, 1, 1, 1, 1, 1, 1, 1].map((i, index) => (
+  //     <Skeleton height="200px" key={index} width="200px" m={4} />
+  //   ))}
+  // </SimpleGrid>
+);
 function HomePage() {
   const [category, setCategory] = useState('all');
   const [color, setColor] = useState('#383838');
@@ -57,13 +69,15 @@ function HomePage() {
             <ColorSwitcher color={color} setColor={setColor} />
           </Flex>
           <Box style={{ overflowY: 'scroll' }} h={'80vh'}>
-            {data && (
+            {data ? (
               <IconGrid
                 data={data}
                 isSearching={isSearching}
                 color={color}
                 category={category}
               />
+            ) : (
+              skeleton
             )}
           </Box>
           <Box p={10}>
