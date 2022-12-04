@@ -7,12 +7,14 @@ function SearchBar({ query, setQuery, setData, setSearching, setCategory }) {
   function search() {
     setSearching(true);
     axios
-      .get(`https://staging.noorahealth.org/icons/api/v1/search/?q=${query}`)
+      .get(
+        `https://staging.noorahealth.org/icons/api/v1/search/?limit=30&q=${query}`
+      )
       .then(result => {
         setCategory('all');
         console.log(result.data);
-        if (result.data.length > 0) {
-          setData(result.data);
+        if (result.data.results.length > 0) {
+          setData(result.data.results);
         } else {
           setData('none');
         }

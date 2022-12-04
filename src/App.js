@@ -16,22 +16,29 @@ export const fetchIcons = async () => {
   );
   return res.data;
 };
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      cacheTime: 1000 * 60 * 60 * 24, // 24 hours
+    },
+  },
+});
+queryClient.setMutationDefaults(['data'], {
+  mutationFn: async () => {
+    // to avoid clashes with our optimistic update when an offline mutation continues
+    await queryClient.cancelQueries('data');
+    return fetchIcons();
+  },
+});
+const prefetchTodos = async () => {
+  // The results of this query will be cached like a normal query
+  await queryClient.prefetchQuery({
+    queryKey: ['data'],
+    queryFn: fetchIcons,
+  });
+};
+prefetchTodos();
 function App() {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        cacheTime: 1000 * 60 * 60 * 24, // 24 hours
-      },
-    },
-  });
-  queryClient.setMutationDefaults(['data'], {
-    mutationFn: async () => {
-      // to avoid clashes with our optimistic update when an offline mutation continues
-      await queryClient.cancelQueries('data');
-      return fetchIcons();
-    },
-  });
-
   const theme = extendTheme({
     fonts: {
       heading: `'Poppins', sans-serif`,
