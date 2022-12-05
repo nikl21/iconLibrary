@@ -10,7 +10,6 @@ import { queryClient } from './utils/queryApi';
 const persister = createSyncStoragePersister({
   storage: window.localStorage,
 });
-
 function App() {
   const theme = extendTheme({
     fonts: {

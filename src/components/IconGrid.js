@@ -1,5 +1,7 @@
+
 import { Box, Flex, SimpleGrid, Text } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
+
 import IconComponent from './IconComponent';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import axios from 'axios';
@@ -96,6 +98,7 @@ const IconGrid = ({
           <Text>Sorry We didn't find anything!</Text>
         </Box>
       ) : isSearching ? (
+
         <Flex items="center" justify="center">
           <Loader />
         </Flex>

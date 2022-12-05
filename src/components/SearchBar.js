@@ -8,10 +8,14 @@ function SearchBar({ query, setQuery, setData, setSearching, setCategory }) {
     setSearching(true);
     setCategory(null);
     axios
-      .get(`https://staging.noorahealth.org/icons/api/v1/search/?q=${query}`)
+      .get(
+        `https://staging.noorahealth.org/icons/api/v1/search/?limit=30&q=${query}`
+      )
       .then(result => {
+
         if (result.data.results?.length > 0) {
           setData(result.data);
+
         } else {
           setData('none');
         }
