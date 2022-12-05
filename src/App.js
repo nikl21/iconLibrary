@@ -4,40 +4,12 @@ import { ChakraProvider } from '@chakra-ui/react';
 import HomePage from './pages/HomePage';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
-import axios from 'axios';
 import { extendTheme } from '@chakra-ui/react';
+import { queryClient } from './utils/queryApi';
 
 const persister = createSyncStoragePersister({
   storage: window.localStorage,
 });
-export const fetchIcons = async () => {
-  const res = await await axios.get(
-    'https://staging.noorahealth.org/icons/api/v1/icons/?limit=40'
-  );
-  return res.data;
-};
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      cacheTime: 1000 * 60 * 60 * 24, // 24 hours
-    },
-  },
-});
-queryClient.setMutationDefaults(['data'], {
-  mutationFn: async () => {
-    // to avoid clashes with our optimistic update when an offline mutation continues
-    await queryClient.cancelQueries('data');
-    return fetchIcons();
-  },
-});
-const prefetchTodos = async () => {
-  // The results of this query will be cached like a normal query
-  await queryClient.prefetchQuery({
-    queryKey: ['data'],
-    queryFn: fetchIcons,
-  });
-};
-prefetchTodos();
 function App() {
   const theme = extendTheme({
     fonts: {

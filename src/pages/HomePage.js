@@ -1,12 +1,4 @@
-import {
-  Box,
-  Center,
-  Divider,
-  Flex,
-  Spacer,
-  Spinner,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Center, Flex, Spacer, Text } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import NavBar from '../components/NavBar';
 import IconGrid from '../components/IconGrid';
@@ -14,62 +6,38 @@ import SearchBar from '../components/SearchBar';
 import ColorSwitcher from '../components/ColorSwitcher';
 import CategoryList from '../components/CategoryList';
 import { useQuery } from '@tanstack/react-query';
-import { fetchIcons } from '../App';
+import { fetchIcons, queryClient } from '../utils/queryApi';
+import Loader from '../components/Loader';
 
+const skeleton = (
+  <Center>
+    <Loader />
+  </Center>
+);
 function HomePage() {
   const [category, setCategory] = useState('all');
   const [color, setColor] = useState('#383838');
   const [query, setQuery] = useState('');
   // const [datas, setData] = useState(null);
-  const [filteredData, setFilteredData] = useState(null);
+
   const [searchData, setSearchData] = useState(null);
   const [isSearching, setSearching] = useState(false);
+  const [fetchPost, setFetchPost] = useState(true);
 
-  const { status, data, error } = useQuery(['data'], fetchIcons);
-  useEffect(() => {
-    function filter() {
-      const filterColor = [];
-      if (!searchData) {
-        data &&
-          data?.results.forEach(icon => {
-            const iconObj = {};
-            iconObj.category = icon.category.slug;
-            icon.variants.forEach(variant => {
-              if (variant.color === color) {
-                iconObj.image = variant.image;
-                iconObj.name = variant.filename;
-                if (category === 'all') {
-                  filterColor.push(iconObj);
-                } else if (category === icon.category.slug) {
-                  filterColor.push(iconObj);
-                }
-              }
-            });
-          });
-        setFilteredData(filterColor);
-      } else if (searchData !== 'none') {
-        searchData.forEach(icon => {
-          const iconObj = {};
-          iconObj.category = icon.category.slug;
-          icon.variants.forEach(variant => {
-            if (variant.color === color) {
-              iconObj.image = variant.image;
-              iconObj.name = variant.filename;
-              if (category === 'all') {
-                filterColor.push(iconObj);
-              } else if (category === icon.category.slug) {
-                filterColor.push(iconObj);
-              }
-            }
-          });
-        });
-        setFilteredData(filterColor);
-      } else {
-        setFilteredData('none');
-      }
+  const { status, data, error } = useQuery(
+    [category],
+    () => fetchIcons(category),
+    {
+      enabled: fetchPost,
     }
-    filter();
-  }, [color, data, category, searchData]);
+  );
+
+  useEffect(() => {
+    setFetchPost(true);
+    if (data && data.count === data.results.length) {
+      setFetchPost(false);
+    }
+  }, [data]);
   return (
     <Box textAlign="center" fontSize="xl" px={[6, 10, 16]}>
       <NavBar />
@@ -78,6 +46,7 @@ function HomePage() {
           <CategoryList
             category={category}
             setCategory={setCategory}
+            setSearching={setSearching}
             setSearchData={setSearchData}
             setQuery={setQuery}
           />
@@ -97,8 +66,19 @@ function HomePage() {
             <Spacer />
             <ColorSwitcher color={color} setColor={setColor} />
           </Flex>
-          <Box style={{ overflowY: 'scroll' }} h={'80vh'}>
-            <IconGrid data={filteredData} isSearching={isSearching} />
+          <Box h={'80vh'}>
+            {data ? (
+              <IconGrid
+                data={data}
+                isSearching={isSearching}
+                searchData={searchData}
+                color={color}
+                category={category}
+                setCategory={setCategory}
+              />
+            ) : (
+              skeleton
+            )}
           </Box>
           <Box p={10}>
             <Text as="b" color="black">

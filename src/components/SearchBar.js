@@ -6,18 +6,20 @@ import React from 'react';
 function SearchBar({ query, setQuery, setData, setSearching, setCategory }) {
   function search() {
     setSearching(true);
+    setCategory(null);
     axios
       .get(
         `https://staging.noorahealth.org/icons/api/v1/search/?limit=30&q=${query}`
       )
       .then(result => {
-        setCategory('all');
-        console.log(result.data);
-        if (result.data.results.length > 0) {
-          setData(result.data.results);
+
+        if (result.data.results?.length > 0) {
+          setData(result.data);
+
         } else {
           setData('none');
         }
+
         setSearching(false);
       });
   }
