@@ -4,7 +4,6 @@ import { ChakraProvider } from '@chakra-ui/react';
 import HomePage from './pages/HomePage';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
-import axios from 'axios';
 import { extendTheme } from '@chakra-ui/react';
 import { queryClient } from './utils/queryApi';
 

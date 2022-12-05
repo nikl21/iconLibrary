@@ -1,12 +1,4 @@
-import {
-  Box,
-  Center,
-  Flex,
-  SimpleGrid,
-  Skeleton,
-  Spacer,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Center, Flex, Spacer, Text } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import NavBar from '../components/NavBar';
 import IconGrid from '../components/IconGrid';
@@ -14,19 +6,13 @@ import SearchBar from '../components/SearchBar';
 import ColorSwitcher from '../components/ColorSwitcher';
 import CategoryList from '../components/CategoryList';
 import { useQuery } from '@tanstack/react-query';
-import { fetchIcons } from '../utils/queryApi';
-import Lottie from 'react-lottie';
-import * as animationData from '../assets/loader.lottie';
+import { fetchIcons, queryClient } from '../utils/queryApi';
+import Loader from '../components/Loader';
 
 const skeleton = (
   <Center>
-    <Text>Loading</Text>
+    <Loader />
   </Center>
-  // <SimpleGrid pb={40} columns={[1, 1, 2, 4]} py={4}>
-  //   {[1, 1, 1, 1, 1, 1, 1, , 1, 1, 1, 1, 1, 1, 1, 1, 1].map((i, index) => (
-  //     <Skeleton height="200px" key={index} width="200px" m={4} />
-  //   ))}
-  // </SimpleGrid>
 );
 function HomePage() {
   const [category, setCategory] = useState('all');
@@ -36,11 +22,22 @@ function HomePage() {
 
   const [searchData, setSearchData] = useState(null);
   const [isSearching, setSearching] = useState(false);
+  const [fetchPost, setFetchPost] = useState(true);
 
-  const { status, data, error } = useQuery([category], () =>
-    fetchIcons(category)
+  const { status, data, error } = useQuery(
+    [category],
+    () => fetchIcons(category),
+    {
+      enabled: fetchPost,
+    }
   );
 
+  useEffect(() => {
+    setFetchPost(true);
+    if (data && data.count === data.results.length) {
+      setFetchPost(false);
+    }
+  }, [data]);
   return (
     <Box textAlign="center" fontSize="xl" px={[6, 10, 16]}>
       <NavBar />
@@ -49,6 +46,7 @@ function HomePage() {
           <CategoryList
             category={category}
             setCategory={setCategory}
+            setSearching={setSearching}
             setSearchData={setSearchData}
             setQuery={setQuery}
           />
@@ -68,13 +66,15 @@ function HomePage() {
             <Spacer />
             <ColorSwitcher color={color} setColor={setColor} />
           </Flex>
-          <Box style={{ overflowY: 'scroll' }} h={'80vh'}>
+          <Box h={'80vh'}>
             {data ? (
               <IconGrid
                 data={data}
                 isSearching={isSearching}
+                searchData={searchData}
                 color={color}
                 category={category}
+                setCategory={setCategory}
               />
             ) : (
               skeleton

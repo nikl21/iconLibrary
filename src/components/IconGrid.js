@@ -1,43 +1,24 @@
-import { Box, SimpleGrid, Skeleton, Text } from '@chakra-ui/react';
+import { Box, Flex, SimpleGrid, Text } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
 import IconComponent from './IconComponent';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import axios from 'axios';
 import FilterColor from '../utils/FilterColor';
 import { queryClient } from '../utils/queryApi';
+import Loader from './Loader';
 
-const IconGrid = ({ data, isSearching, color, category }) => {
+const IconGrid = ({
+  data,
+  isSearching,
+  searchData,
+  color,
+  category,
+  setCategory,
+}) => {
   const [nextData, setNextData] = useState(data.next);
   const [iconData, setData] = useState(data.results);
   const [filteredData, setFilteredData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  // console.log(filteredData.length,nextData);
-  // useEffect(() => {
-  //   if (!isLoading) {
-  //     console.log('done');
-  //     const prevData = queryClient.getQueryData([category]);
-  //     console.log(prevData, iconData);
-  //     if (prevData.results.length !== iconData.length) {
-  //       prevData.next = null;
-  //       prevData.results = iconData;
-  //       queryClient.setQueryData([category], prevData);
-  //     }
-  //   }
-  // }, [isLoading, category, iconData]);
-  useEffect(() => {
-    setData(data.results);
-    if (data.next) {
-      setNextData(data.next);
-      setIsLoading(true);
-    } else {
-      setIsLoading(false);
-    }
-
-    return;
-  }, [category, data]);
-  useEffect(() => {
-    setFilteredData([]);
-  }, [category]);
 
   useEffect(() => {
     function filter() {
@@ -47,8 +28,43 @@ const IconGrid = ({ data, isSearching, color, category }) => {
     iconData && filter();
   }, [color, iconData, data]);
 
+  useEffect(() => {
+    if (!isSearching && searchData?.results?.length > 0) {
+      console.log('hi', searchData.results);
+      setData(searchData.results);
+      setFilteredData([]);
+    } else {
+      setData([]);
+    }
+  }, [isSearching, searchData]);
+
+  useEffect(() => {
+    setData(data.results);
+    if (data.next) {
+      setNextData(data.next);
+      setIsLoading(true);
+    } else {
+      setNextData(null);
+      setIsLoading(false);
+    }
+  }, [data]);
+  // const isInitialMount = useRef(true);
+
+  // useEffect(() => {
+  //       setData(data.results);
+  // }, [ data.results]);
+
+  useEffect(() => {
+    if (
+      data.count !== data.results.length &&
+      filteredData.length === data.count
+    ) {
+      const newData = { ...data, results: iconData, next: null };
+      queryClient.setQueryData([category], newData);
+    }
+  }, [data, category, filteredData.length, iconData]);
+
   async function fetchData() {
-    console.log('fetching');
     if (nextData === null) {
       setIsLoading(false);
     } else {
@@ -75,26 +91,37 @@ const IconGrid = ({ data, isSearching, color, category }) => {
 
   return (
     <>
-      {data === 'none' && !isSearching ? (
+      {searchData === 'none' && !isSearching ? (
         <Box h="full" pt="40">
           <Text>Sorry We didn't find anything!</Text>
         </Box>
+      ) : isSearching ? (
+        <Flex items="center" justify="center">
+          <Loader />
+        </Flex>
       ) : (
-        <InfiniteScroll
-          dataLength={18} //This is important field to render the next data
-          next={fetchData}
-          hasMore={isLoading}
-          loader={<h4>Loading...</h4>}
-          endMessage={
-            <p style={{ textAlign: 'center' }}>
-              <b>Yay! You have seen it all</b>
-            </p>
-          }
+        <Box
+          style={{ overflowY: 'scroll' }}
+          id="scroll"
+          height="700"
+          flexDirection="column-reverse"
         >
-          <SimpleGrid pb={40} columns={[1, 1, 2, 4]} py={4}>
-            {filteredData && filteredData !== 'none' && icons}
-          </SimpleGrid>
-        </InfiniteScroll>
+          <InfiniteScroll
+            dataLength={iconData.length} //This is important field to render the next data
+            next={fetchData}
+            hasMore={isLoading}
+            loader={
+              <Flex items="center" justify="center">
+                <Loader />
+              </Flex>
+            }
+            scrollableTarget="scroll"
+          >
+            <SimpleGrid pb={0} columns={[1, 1, 2, 4]} py={0}>
+              {filteredData && filteredData !== 'none' && icons}
+            </SimpleGrid>
+          </InfiniteScroll>
+        </Box>
       )}
     </>
   );

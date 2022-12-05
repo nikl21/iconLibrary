@@ -1,5 +1,3 @@
-import React from 'react';
-
 const FilterColor = (data, color) => {
   const filterColor = [];
   data &&
