@@ -66,7 +66,7 @@ function HomePage() {
             <Spacer />
             <ColorSwitcher color={color} setColor={setColor} />
           </Flex>
-          <Box h={'80vh'}>
+          <Box h={''} mt={10}>
             {data ? (
               <IconGrid
                 data={data}

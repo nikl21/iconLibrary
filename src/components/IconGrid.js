@@ -1,5 +1,5 @@
 import { Box, Flex, SimpleGrid, Text } from '@chakra-ui/react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import IconComponent from './IconComponent';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import axios from 'axios';
@@ -7,14 +7,7 @@ import FilterColor from '../utils/FilterColor';
 import { queryClient } from '../utils/queryApi';
 import Loader from './Loader';
 
-const IconGrid = ({
-  data,
-  isSearching,
-  searchData,
-  color,
-  category,
-  setCategory,
-}) => {
+const IconGrid = ({ data, isSearching, searchData, color, category }) => {
   const [nextData, setNextData] = useState(data.next);
   const [iconData, setData] = useState(data.results);
   const [filteredData, setFilteredData] = useState([]);
@@ -48,11 +41,6 @@ const IconGrid = ({
       setIsLoading(false);
     }
   }, [data]);
-  // const isInitialMount = useRef(true);
-
-  // useEffect(() => {
-  //       setData(data.results);
-  // }, [ data.results]);
 
   useEffect(() => {
     if (
@@ -96,14 +84,14 @@ const IconGrid = ({
           <Text>Sorry We didn't find anything!</Text>
         </Box>
       ) : isSearching ? (
-        <Flex items="center" justify="center">
+        <Flex items="center" justify="center" mt={'250'}>
           <Loader />
         </Flex>
       ) : (
         <Box
           style={{ overflowY: 'scroll' }}
           id="scroll"
-          height="700"
+          height="600"
           flexDirection="column-reverse"
         >
           <InfiniteScroll
@@ -117,7 +105,7 @@ const IconGrid = ({
             }
             scrollableTarget="scroll"
           >
-            <SimpleGrid pb={0} columns={[1, 1, 2, 4]} py={0}>
+            <SimpleGrid pb={0} columns={[1, 1, 2, 4]}>
               {filteredData && filteredData !== 'none' && icons}
             </SimpleGrid>
           </InfiniteScroll>
