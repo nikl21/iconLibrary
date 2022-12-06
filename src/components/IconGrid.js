@@ -1,5 +1,4 @@
-
-import { Box, Flex, SimpleGrid, Text } from '@chakra-ui/react';
+import { Box, Center, Flex, SimpleGrid, Text } from '@chakra-ui/react';
 
 import React, { useEffect, useState } from 'react';
 
@@ -83,15 +82,13 @@ const IconGrid = ({ data, isSearching, searchData, color, category }) => {
   return (
     <>
       {searchData === 'none' && !isSearching ? (
-        <Box h="full" pt="40">
+        <Box pt="40">
           <Text>Sorry We didn't find anything!</Text>
         </Box>
       ) : isSearching ? (
-
-        <Flex items="center" justify="center" mt={'250'}>
-
+        <Center h={600}>
           <Loader />
-        </Flex>
+        </Center>
       ) : (
         <Box
           style={{ overflowY: 'scroll' }}
@@ -104,7 +101,7 @@ const IconGrid = ({ data, isSearching, searchData, color, category }) => {
             next={fetchData}
             hasMore={isLoading}
             loader={
-              <Flex items="center" justify="center">
+              <Flex h={600} items="center" justify="center">
                 <Loader />
               </Flex>
             }

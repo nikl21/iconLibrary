@@ -68,16 +68,20 @@ function HomePage() {
           </Flex>
           <Box h={''} mt={10}>
             {data ? (
-              <IconGrid
-                data={data}
-                isSearching={isSearching}
-                searchData={searchData}
-                color={color}
-                category={category}
-                setCategory={setCategory}
-              />
+              <Box>
+                <IconGrid
+                  data={data}
+                  isSearching={isSearching}
+                  searchData={searchData}
+                  color={color}
+                  category={category}
+                  setCategory={setCategory}
+                />
+              </Box>
             ) : (
-              skeleton
+              <Flex h={600} items={'center'} justify="center">
+                {skeleton}
+              </Flex>
             )}
           </Box>
           <Box p={10}>
