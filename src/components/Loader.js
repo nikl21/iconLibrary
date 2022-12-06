@@ -5,7 +5,7 @@ import { Box } from '@chakra-ui/react';
 
 const Loader = () => {
   return (
-    <Box boxSize={200}>
+    <Box boxSize={200} bg={'white'} opacity={0.9}>
       <Lottie animationData={loader} loop={true} />
     </Box>
   );

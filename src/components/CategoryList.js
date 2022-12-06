@@ -18,7 +18,7 @@ function CategoryList({
   return (
     <VStack
       gap={6}
-      style={{ overflowY: 'scroll' }}
+      // style={{ overflowY: 'scroll' }}
       h={'80vh'}
       justify="flex-start"
       align="left"

@@ -1,6 +1,6 @@
+import { Box, Center, Flex, SimpleGrid, Text } from '@chakra-ui/react';
 
-import { Box, Flex, SimpleGrid, Text } from '@chakra-ui/react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import IconComponent from './IconComponent';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -9,14 +9,7 @@ import FilterColor from '../utils/FilterColor';
 import { queryClient } from '../utils/queryApi';
 import Loader from './Loader';
 
-const IconGrid = ({
-  data,
-  isSearching,
-  searchData,
-  color,
-  category,
-  setCategory,
-}) => {
+const IconGrid = ({ data, isSearching, searchData, color, category }) => {
   const [nextData, setNextData] = useState(data.next);
   const [iconData, setData] = useState(data.results);
   const [filteredData, setFilteredData] = useState([]);
@@ -50,11 +43,6 @@ const IconGrid = ({
       setIsLoading(false);
     }
   }, [data]);
-  // const isInitialMount = useRef(true);
-
-  // useEffect(() => {
-  //       setData(data.results);
-  // }, [ data.results]);
 
   useEffect(() => {
     if (
@@ -94,19 +82,18 @@ const IconGrid = ({
   return (
     <>
       {searchData === 'none' && !isSearching ? (
-        <Box h="full" pt="40">
+        <Box pt="40">
           <Text>Sorry We didn't find anything!</Text>
         </Box>
       ) : isSearching ? (
-
-        <Flex items="center" justify="center">
+        <Center h={600}>
           <Loader />
-        </Flex>
+        </Center>
       ) : (
         <Box
           style={{ overflowY: 'scroll' }}
           id="scroll"
-          height="700"
+          height="600"
           flexDirection="column-reverse"
         >
           <InfiniteScroll
@@ -114,13 +101,13 @@ const IconGrid = ({
             next={fetchData}
             hasMore={isLoading}
             loader={
-              <Flex items="center" justify="center">
+              <Flex h={600} items="center" justify="center">
                 <Loader />
               </Flex>
             }
             scrollableTarget="scroll"
           >
-            <SimpleGrid pb={0} columns={[1, 1, 2, 4]} py={0}>
+            <SimpleGrid pb={0} columns={[1, 1, 2, 4]}>
               {filteredData && filteredData !== 'none' && icons}
             </SimpleGrid>
           </InfiniteScroll>
