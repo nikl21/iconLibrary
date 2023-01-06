@@ -9,7 +9,7 @@ function SearchBar({ query, setQuery, setData, setSearching, setCategory }) {
     setCategory(null);
     axios
       .get(
-        `https://staging.noorahealth.org/icons/api/v1/search/?limit=30&q=${query}`
+        `https://intranet.noorahealth.org/icons/api/v1/search/?limit=30&q=${query}`
       )
       .then(result => {
 

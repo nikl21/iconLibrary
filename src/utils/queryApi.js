@@ -18,7 +18,7 @@ queryClient.setMutationDefaults(['all'], {
 
 const fetchIcons = async category => {
   const res = await await axios.get(
-    `https://staging.noorahealth.org/icons/api/v1/icons/?limit=16&category=${category}`
+    `https://intranet.noorahealth.org/icons/api/v1/icons/?limit=16&category=${category}`
   );
   return res.data;
 };
