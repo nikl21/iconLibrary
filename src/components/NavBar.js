@@ -1,15 +1,5 @@
 import { DownloadIcon } from '@chakra-ui/icons';
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  Flex,
-  Heading,
-  Image,
-  Link,
-  Spacer,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Button, Flex, Image, Spacer, Text } from '@chakra-ui/react';
 import React from 'react';
 import logo from '../assets/logo.png';
 import { saveAs } from 'file-saver';

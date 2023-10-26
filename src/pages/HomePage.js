@@ -6,7 +6,7 @@ import SearchBar from '../components/SearchBar';
 import ColorSwitcher from '../components/ColorSwitcher';
 import CategoryList from '../components/CategoryList';
 import { useQuery } from '@tanstack/react-query';
-import { fetchIcons, queryClient } from '../utils/queryApi';
+import { fetchCategory, fetchIcons } from '../utils/queryApi';
 import Loader from '../components/Loader';
 
 const skeleton = (
@@ -19,25 +19,32 @@ function HomePage() {
   const [color, setColor] = useState('#383838');
   const [query, setQuery] = useState('');
   // const [datas, setData] = useState(null);
-
   const [searchData, setSearchData] = useState(null);
   const [isSearching, setSearching] = useState(false);
   const [fetchPost, setFetchPost] = useState(true);
 
-  const { status, data, error } = useQuery(
-    [category],
-    () => fetchIcons(category),
-    {
-      enabled: fetchPost,
-    }
-  );
+  const {
+    data: data1,
+    // isLoading: isLoading1,
+    // error: error1,
+  } = useQuery([category], () => fetchIcons(category), {
+    enabled: fetchPost,
+  });
 
+  const {
+    data: data2,
+    // isLoading: isLoading1,
+    // error: error1,
+  } = useQuery(['categoryList'], () => fetchCategory(), {
+    enabled: fetchPost,
+  });
   useEffect(() => {
     setFetchPost(true);
-    if (data && data.count === data.results.length) {
+    if (data1 && data1.count === data1.results.length && data2) {
       setFetchPost(false);
     }
-  }, [data]);
+  }, [data1]);
+
   return (
     <Box textAlign="center" fontSize="xl" px={[6, 10, 16]}>
       <NavBar />
@@ -47,6 +54,7 @@ function HomePage() {
             category={category}
             setCategory={setCategory}
             setSearching={setSearching}
+            categoryList={data2 && data2.results}
             setSearchData={setSearchData}
             setQuery={setQuery}
           />
@@ -67,10 +75,10 @@ function HomePage() {
             <ColorSwitcher color={color} setColor={setColor} />
           </Flex>
           <Box h={''} mt={10}>
-            {data ? (
+            {data1 ? (
               <Box>
                 <IconGrid
-                  data={data}
+                  data={data1}
                   isSearching={isSearching}
                   searchData={searchData}
                   color={color}

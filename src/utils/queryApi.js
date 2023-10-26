@@ -22,5 +22,10 @@ const fetchIcons = async category => {
   );
   return res.data;
 };
-
-export { queryClient, fetchIcons };
+const fetchCategory = async () => {
+  const res = await await axios.get(
+    `https://intranet.noorahealth.org/icons/api/v1/categories/`
+  );
+  return res.data;
+};
+export { queryClient, fetchIcons, fetchCategory };
